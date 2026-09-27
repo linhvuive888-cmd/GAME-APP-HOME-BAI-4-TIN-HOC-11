@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERCORE CHALLENGE – GIẢI MÃ BÊN TRONG MÁY TÍNH | Tin học 11</title>
+  <style>
+    /* ==================================================
+       01. HỆ THỐNG GIAO DIỆN & CYBERPUNK THEME (GEN Z)
+       ================================================== */
+    :root {
+      --bg-dark: #070914;
+      --bg-panel: rgba(15, 20, 42, 0.88);
+      --border-panel: rgba(0, 243, 255, 0.35);
+      --neon-cyan: #00f3ff;
+      --neon-purple: #9d00ff;
+      --neon-magenta: #ff007f;
+      --neon-green: #00ff88;
+      --neon-red: #ff3366;
+      --neon-yellow: #ffee00;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-ui: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Consolas', 'Fira Code', 'Courier New', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      position: relative;
+    }
+
+    /* Hiệu ứng nền Cyber đa tầng */
+    .cyber-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: -2;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-gradient {
+      position: absolute;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle at 15% 15%, rgba(0, 243, 255, 0.1) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 85%, rgba(157, 0, 255, 0.12) 0%, transparent 50%),
+                  radial-gradient(circle at 50% 50%, rgba(255, 0, 127, 0.05) 0%, transparent 60%),
+                  linear-gradient(180deg, #050711 0%, #0a0f26 50%, #070914 100%);
+    }
+
+    .bg-grid {
+      position: absolute;
+      width: 100%; height: 100%;
+      background-image: linear-gradient(rgba(0, 243, 255, 0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 243, 255, 0.04) 1px, transparent 1px);
+      background-size: 38px 38px;
+      opacity: 0.7;
+    }
+
+    /* Container chính */
+    .app-container {
+      width: 100%;
+      max-width: 920px;
+      min-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Thanh thông tin tác giả & Âm thanh */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 6px 8px;
+    }
+
+    .author-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      letter-spacing: 1px;
+      color: var(--neon-cyan);
+      background: rgba(0, 243, 255, 0.08);
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    }
+
+    .audio-btn {
+      background: rgba(15, 20, 42, 0.85);
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      color: var(--neon-cyan);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .audio-btn:hover {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+    }
+
+    /* Khung màn hình Glassmorphism */
+    .screen-card {
+      background: var(--bg-panel);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-panel);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65), inset 0 0 20px rgba(0, 243, 255, 0.05);
+      display: none;
+      animation: screenFade 0.25s ease-out;
+    }
+    .screen-card.active { display: block; }
+
+    @keyframes screenFade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==================================================
+       MÀN HÌNH 1: CHÀO MỪNG (WELCOME)
+       ================================================== */
+    .welcome-box {
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .lab-hero-icon {
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 16px;
+      filter: drop-shadow(0 0 15px var(--neon-cyan));
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--neon-magenta);
+      border: 1px dashed rgba(255, 0, 127, 0.4);
+      padding: 4px 14px;
+      border-radius: 30px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px rgba(255, 0, 127, 0.5);
+    }
+
+    .game-h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #00f3ff, #ffee00, #ff007f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .game-sub {
+      color: var(--neon-yellow);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      text-shadow: 0 0 10px rgba(255, 238, 0, 0.4);
+    }
+
+    .workshop-intro-card {
+      background: rgba(8, 12, 28, 0.85);
+      border: 1px solid rgba(0, 243, 255, 0.25);
+      border-radius: 14px;
+      padding: 18px 20px;
+      text-align: left;
+      margin: 18px auto;
+      max-width: 680px;
+      font-size: 0.98rem;
+      line-height: 1.65;
+      color: #cbd5e1;
+    }
+
+    .input-wrap {
+      margin: 22px auto;
+      max-width: 380px;
+      text-align: center;
+    }
+    .input-wrap label {
+      display: block;
+      font-size: 0.9rem;
+      font-family: var(--font-mono);
+      color: var(--neon-cyan);
+      margin-bottom: 8px;
+    }
+    .cyber-input {
+      width: 100%;
+      background: rgba(6, 10, 25, 0.9);
+      border: 2px solid rgba(0, 243, 255, 0.4);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      color: #fff;
+      text-align: center;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .cyber-input:focus {
+      border-color: var(--neon-magenta);
+      box-shadow: 0 0 14px rgba(255, 0, 127, 0.5);
+    }
+
+    .btn-cyber-primary {
+      background: linear-gradient(90deg, #ff007f, #9d00ff, #00f3ff);
+      background-size: 200% auto;
+      color: #ffffff;
+      border: none;
+      padding: 16px 38px;
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(0, 243, 255, 0.4), 0 0 30px rgba(255, 0, 127, 0.3);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-cyber-primary:hover {
+      background-position: right center;
+      transform: translateY(-2px);
+      box-shadow: 0 0 24px rgba(0, 243, 255, 0.7);
+    }
+
+    /* ==================================================
+       MÀN HÌNH 2: HƯỚNG DẪN (INSTRUCTIONS)
+       ================================================== */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .rule-box {
+      background: rgba(8, 12, 28, 0.85);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: left;
+    }
+    .rule-title {
+      font-family: var(--font-mono);
+      color: var(--neon-cyan);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rule-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ==================================================
+       MÀN HÌNH 3: GAMING HUD & LÀM BÀI (QUEST)
+       ================================================== */
+    .hud-bar {
+      background: rgba(8, 12, 28, 0.92);
+      border: 1px solid rgba(0, 243, 255, 0.25);
+      border-radius: 14px;
+      padding: 12px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hud-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+    }
+    .hud-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hud-val {
+      font-weight: 800;
+      color: var(--neon-cyan);
+    }
+    .hud-timer-badge {
+      background: rgba(4, 7, 18, 0.95);
+      border: 1.5px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+      padding: 4px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .hud-timer-badge.warning {
+      border-color: var(--neon-red);
+      color: var(--neon-red);
+      box-shadow: 0 0 12px var(--neon-red);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-cyan), var(--neon-purple));
+      transition: width 0.3s ease;
+      box-shadow: 0 0 8px var(--neon-cyan);
+    }
+
+    .task-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .task-tag {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--neon-cyan);
+    }
+    .diff-badge {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .diff-nhan-biet { background: rgba(0, 243, 255, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+    .diff-thong-hieu { background: rgba(255, 238, 0, 0.15); color: #fde047; border: 1px solid rgba(253, 224, 71, 0.4); }
+    .diff-van-dung { background: rgba(255, 0, 127, 0.18); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.4); }
+
+    .question-title {
+      font-size: 1.18rem;
+      font-weight: 700;
+      line-height: 1.5;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .component-graphic-box {
+      background: #03050d;
+      border: 1px solid rgba(0, 243, 255, 0.25);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .component-graphic-box svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Phương án trắc nghiệm A-B-C-D */
+    .options-grid {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .opt-card {
+      background: rgba(10, 15, 32, 0.85);
+      border: 1.5px solid rgba(0, 243, 255, 0.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.2s ease;
+      color: #e2e8f0;
+      text-align: left;
+    }
+    .opt-card:hover:not(.disabled) {
+      border-color: var(--neon-cyan);
+      background: rgba(0, 243, 255, 0.08);
+      transform: translateX(4px);
+    }
+    .opt-card.selected {
+      border-color: var(--neon-magenta);
+      background: rgba(255, 0, 127, 0.12);
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.35);
+    }
+    .opt-card.correct-ans {
+      border-color: var(--neon-green) !important;
+      background: rgba(0, 255, 136, 0.15) !important;
+      color: #e6fffa !important;
+      box-shadow: 0 0 14px rgba(0, 255, 136, 0.4) !important;
+    }
+    .opt-card.wrong-ans {
+      border-color: var(--neon-red) !important;
+      background: rgba(255, 51, 102, 0.15) !important;
+      color: #ffe4e6 !important;
+      box-shadow: 0 0 14px rgba(255, 51, 102, 0.4) !important;
+    }
+
+    .opt-key {
+      min-width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--neon-cyan);
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .opt-card.selected .opt-key {
+      background: var(--neon-magenta);
+      border-color: var(--neon-magenta);
+      color: #fff;
+    }
+    .opt-card.correct-ans .opt-key {
+      background: var(--neon-green);
+      border-color: var(--neon-green);
+      color: #032b17;
+    }
+    .opt-card.wrong-ans .opt-key {
+      background: var(--neon-red);
+      border-color: var(--neon-red);
+      color: #fff;
+    }
+    .opt-val {
+      flex: 1;
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    /* Giao diện Đúng/Sai (Câu 19, 20) */
+    .tf-table-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .tf-row {
+      background: rgba(8, 12, 26, 0.85);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      transition: all 0.2s ease;
+    }
+    .tf-row.correct-row { border-color: var(--neon-green); background: rgba(0, 255, 136, 0.08); }
+    .tf-row.wrong-row { border-color: var(--neon-red); background: rgba(255, 51, 102, 0.08); }
+
+    .tf-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .tf-text {
+      flex: 1;
+      font-size: 0.98rem;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+    .tf-btn-pair {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .btn-tf {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 800;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-tf:hover:not(:disabled) {
+      border-color: var(--neon-cyan);
+      color: #fff;
+    }
+    .btn-tf.active-true {
+      background: rgba(0, 243, 255, 0.25);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+    }
+    .btn-tf.active-false {
+      background: rgba(255, 0, 127, 0.25);
+      border-color: var(--neon-magenta);
+      color: var(--neon-magenta);
+    }
+    .btn-tf.correct-true, .btn-tf.correct-false {
+      background: var(--neon-green) !important;
+      border-color: var(--neon-green) !important;
+      color: #042f1b !important;
+    }
+    .btn-tf.wrong-clicked {
+      background: var(--neon-red) !important;
+      border-color: var(--neon-red) !important;
+      color: #ffffff !important;
+    }
+
+    .tf-exp-line {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      font-size: 0.88rem;
+      color: #94a3b8;
+      display: none;
+    }
+    .tf-exp-line.show { display: block; }
+
+    /* Banner phản hồi */
+    .feedback-banner {
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      display: none;
+      animation: screenFade 0.2s ease-out;
+    }
+    .feedback-banner.success {
+      background: rgba(0, 255, 136, 0.12);
+      border: 1px solid var(--neon-green);
+      color: #d1fae5;
+    }
+    .feedback-banner.error {
+      background: rgba(255, 51, 102, 0.12);
+      border: 1px solid var(--neon-red);
+      color: #ffe4e6;
+    }
+    .fb-title {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .fb-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #f1f5f9;
+    }
+
+    /* Các nút điều hướng */
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .btn-action {
+      background: linear-gradient(90deg, #00f3ff, #0066ff);
+      color: #030b1e;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 26px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 14px rgba(0, 243, 255, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-action:hover:not(:disabled) {
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.7);
+      transform: translateY(-2px);
+    }
+    .btn-action:disabled {
+      background: #334155;
+      color: #94a3b8;
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-next {
+      background: linear-gradient(90deg, #ff007f, #9d00ff);
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(255, 0, 127, 0.4);
+    }
+    .btn-next:hover { box-shadow: 0 0 22px rgba(255, 0, 127, 0.7); }
+
+    /* ==================================================
+       MÀN HÌNH 4: KẾT QUẢ & BẢNG XẾP HẠNG
+       ================================================== */
+    .result-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .score-giant-val {
+      font-size: 3.6rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: #fff;
+      line-height: 1;
+      margin: 10px 0;
+      text-shadow: 0 0 14px rgba(0, 243, 255, 0.6);
+    }
+    .score-giant-val span { font-size: 1.8rem; color: var(--text-muted); }
+
+    .matrix-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: rgba(6, 10, 25, 0.9);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .stat-val {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: var(--font-mono);
+    }
+
+    .leaderboard-box {
+      background: rgba(6, 10, 25, 0.85);
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      border-radius: 14px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+    .leaderboard-title {
+      color: var(--neon-cyan);
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .leader-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      text-align: left;
+    }
+    .leader-table th, .leader-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .leader-table th {
+      color: var(--neon-yellow);
+      font-family: var(--font-mono);
+    }
+    .rank-1 { color: #facc15; font-weight: 800; }
+    .rank-2 { color: #cbd5e1; font-weight: 800; }
+    .rank-3 { color: #f97316; font-weight: 800; }
+
+    @media (max-width: 680px) {
+      body { padding: 8px; }
+      .screen-card { padding: 18px 14px; }
+      .game-h1 { font-size: 1.65rem; }
+      .rules-grid, .matrix-stats-grid { grid-template-columns: 1fr; }
+      .tf-top { flex-direction: column; gap: 8px; }
+      .tf-btn-pair { width: 100%; justify-content: flex-end; }
+      .btn-tf { flex: 1; text-align: center; }
+      .score-giant-val { font-size: 2.8rem; }
+      .hud-top-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cyber-bg">
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- Header bar -->
+    <header class="header-bar">
+      <div class="author-badge">
+        <span>⚡ TÁC GIẢ:</span>
+        <strong>MRS.LINH</strong>
+      </div>
+      <button id="btnToggleSound" class="audio-btn" type="button">
+        <span id="soundIcon">🔊</span>
+        <span id="soundLabel">SOUND ON</span>
+      </button>
+    </header>
+
+    <!-- ==========================================
+         MÀN HÌNH 1: CHÀO MỪNG (WELCOME)
+         ========================================== -->
+    <section id="screenWelcome" class="screen-card active">
+      <div class="welcome-box">
+        <!-- SVG CPU Core -->
+        <svg class="lab-hero-icon" viewBox="0 0 100 100" fill="none">
+          <rect x="20" y="20" width="60" height="60" rx="10" stroke="#00f3ff" stroke-width="3" fill="#0b1226"/>
+          <rect x="32" y="32" width="36" height="36" rx="4" fill="#9d00ff" fill-opacity="0.3" stroke="#ff007f" stroke-width="2"/>
+          <circle cx="50" cy="50" r="10" fill="#00f3ff" fill-opacity="0.8"/>
+          <path d="M10 35h10M10 50h10M10 65h10M80 35h10M80 50h10M80 65h10M35 10v10M50 10v10M65 10v10M35 80v10M50 80v10M65 80v10" stroke="#00f3ff" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+
+        <div class="hero-tag">XƯỞNG CÔNG NGHỆ CYBERCORE // TIN HỌC 11</div>
+        <h1 class="game-h1">CYBERCORE CHALLENGE</h1>
+        <div class="game-sub">GIẢI MÃ BÊN TRONG MÁY TÍNH</div>
+
+        <div class="workshop-intro-card">
+          <p>Chào mừng bạn gia nhập <strong>Xưởng công nghệ CyberCore</strong>! Hệ thống đang cần thẩm định năng lực phần cứng chuyên sâu: <strong>CPU, RAM, ROM, thiết bị lưu trữ và đơn vị đo hiệu năng (GHz, GB, TB)</strong>.</p>
+          <p style="margin-top: 8px; color: var(--neon-cyan); font-family: var(--font-mono); font-size: 0.92rem;">
+            Áp dụng kiến thức công nghệ để giải quyết nhu cầu thực tế và tối ưu linh kiện chính xác!
+          </p>
+        </div>
+
+        <div class="input-wrap">
+          <label for="inputPlayerName">NHẬP TÊN KỸ SƯ CÔNG NGHỆ:</label>
+          <input type="text" id="inputPlayerName" class="cyber-input" placeholder="Ví dụ: Kỹ sư Nam 11A..." maxlength="25">
+        </div>
+
+        <button id="btnStartExplore" class="btn-cyber-primary" type="button">
+          ⚡ BẮT ĐẦU KHÁM PHÁ
+        </button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MÀN HÌNH 2: HƯỚNG DẪN (INSTRUCTIONS)
+         ========================================== -->
+    <section id="screenRules" class="screen-card">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <h2 style="font-size: 1.6rem; color: #fff; font-weight: 800;">QUY CHUẨN THỬ THÁCH CYBERCORE</h2>
+        <p style="color: var(--neon-cyan); font-family: var(--font-mono); font-size: 0.95rem; margin-top: 6px;">
+          “Bạn là kỹ sư tập sự CyberCore. Hãy vượt qua 20 thử thách để giải mã bí mật bên trong máy tính.”
+        </p>
+      </div>
+
+      <div class="rules-grid">
+        <div class="rule-box">
+          <div class="rule-title">⏱ THỜI GIAN LÀM BÀI</div>
+          <div class="rule-desc">Thời gian đếm ngược <strong>20 phút</strong>. Khi hết giờ hệ thống sẽ tự động khóa và nộp bài.</div>
+        </div>
+        <div class="rule-box">
+          <div class="rule-title">🎯 CẤU TRÚC ĐỀ BÀI</div>
+          <div class="rule-desc">Gồm <strong>20 thử thách</strong>: 18 câu trắc nghiệm đơn 4 lựa chọn và 2 câu Đúng/Sai 4 nhận định.</div>
+        </div>
+        <div class="rule-box">
+          <div class="rule-title">⭐ THANG ĐIỂM CHUẨN</div>
+          <div class="rule-desc">Thang điểm <strong>10.0 điểm</strong> (18 câu lựa chọn = 9.0 điểm; 2 câu Đúng/Sai gồm 8 nhận định = 1.0 điểm).</div>
+        </div>
+        <div class="rule-box">
+          <div class="rule-title">💡 CHỐNG ĐOÁN MẸO</div>
+          <div class="rule-desc">Các phương án có độ dài đồng đều và tính phân loại cao. Học sinh cần hiểu bản chất để chọn chính xác.</div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 24px;">
+        <button id="btnBeginTest" class="btn-cyber-primary" type="button">
+          🚀 KÍCH HOẠT NHIỆM VỤ
+        </button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MÀN HÌNH 3: KHU VỰC THỬ THÁCH (QUEST)
+         ========================================== -->
+    <section id="screenQuest" class="screen-card">
+      <!-- HUD Bar -->
+      <div class="hud-bar">
+        <div class="hud-top-row">
+          <div class="hud-item">
+            <span>👤 KỸ SƯ:</span>
+            <span id="hudPlayerName" class="hud-val">DEV</span>
+          </div>
+          <div class="hud-item">
+            <span>NHIỆM VỤ:</span>
+            <span id="hudTaskIndex" class="hud-val">01/20</span>
+          </div>
+          <div class="hud-item">
+            <span>ĐIỂM:</span>
+            <span id="hudScoreVal" class="hud-val">0.0</span>/10
+          </div>
+          <div class="hud-item">
+            <span id="hudTimerBadge" class="hud-timer-badge">⏱ 20:00</span>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div id="hudProgressBar" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Task Card -->
+      <div class="task-meta-row">
+        <span id="taskOrderLabel" class="task-tag">CHALLENGE #01</span>
+        <span id="taskDiffBadge" class="diff-badge diff-nhan-biet">NHẬN BIẾT</span>
+      </div>
+
+      <div id="taskQuestionText" class="question-title">Nội dung câu hỏi...</div>
+
+      <!-- Khối hình ảnh linh kiện SVG -->
+      <div id="graphicContainer" class="component-graphic-box"></div>
+
+      <!-- Lựa chọn A-B-C-D -->
+      <div id="mcContainer" class="options-grid"></div>
+
+      <!-- Khung Đúng/Sai (Câu 19, 20) -->
+      <div id="tfContainer" class="tf-table-wrap" style="display: none;"></div>
+
+      <!-- Phản hồi tức thì -->
+      <div id="feedbackBanner" class="feedback-banner">
+        <div id="feedbackTitle" class="fb-title">XUẤT SẮC!</div>
+        <div id="feedbackBody" class="fb-text">Giải thích...</div>
+      </div>
+
+      <!-- Nút thao tác -->
+      <div class="action-row">
+        <button id="btnConfirmAnswer" class="btn-action" type="button" disabled>
+          XÁC NHẬN <span>✓</span>
+        </button>
+        <button id="btnNextTask" class="btn-action btn-next" type="button" style="display: none;">
+          TIẾP TỤC <span>➔</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MÀN HÌNH 4: KẾT QUẢ & BẢNG XẾP HẠNG
+         ========================================== -->
+    <section id="screenReport" class="screen-card">
+      <div class="result-header">
+        <div id="resPillBadge" style="display: inline-block; font-family: var(--font-mono); font-size: 1.15rem; font-weight: 800; padding: 6px 20px; border-radius: 30px; margin-bottom: 12px; background: rgba(0,255,136,0.15); border: 1.5px solid var(--neon-green); color: var(--neon-green);">
+          CHỨNG NHẬN KỸ SƯ CYBERCORE
+        </div>
+        <h2 style="font-size: 1.5rem; color: #fff;">BÁO CÁO THẨM ĐỊNH PHẦN CỨNG</h2>
+        <div style="font-family: var(--font-mono); color: var(--neon-cyan); font-size: 0.95rem; margin-top: 4px;">
+          Kỹ sư: <span id="resPlayerNameDisplay" style="color: #fff; font-weight: 700;">Học sinh</span> • Thiết kế bởi Mrs.Linh
+        </div>
+
+        <div class="score-giant-val"><span id="resFinalScore">0.0</span><span>/10</span></div>
+        <p id="resEvaluationText" style="font-size: 1.05rem; color: #cbd5e1; max-width: 600px; margin: 0 auto; line-height: 1.5;">
+          Bạn đã hoàn thành nhiệm vụ kỹ sư CyberCore. Hãy tiếp tục khám phá thế giới công nghệ!
+        </p>
+      </div>
+
+      <!-- Thống kê chi tiết -->
+      <div class="matrix-stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">SỐ CÂU ĐÚNG</div>
+          <div id="resCorrectCount" class="stat-val" style="color: var(--neon-green);">0 / 20</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">SỐ CÂU SAI</div>
+          <div id="resWrongCount" class="stat-val" style="color: var(--neon-red);">0 / 20</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">THỜI GIAN HOÀN THÀNH</div>
+          <div id="resTimeUsed" class="stat-val" style="color: var(--neon-yellow);">00:00</div>
+        </div>
+      </div>
+
+      <!-- Bảng xếp hạng Top 10 -->
+      <div class="leaderboard-box">
+        <div class="leaderboard-title">
+          <span>🏆</span> TOP 10 KỸ SƯ XUẤT SẮC NHẤT
+        </div>
+        <table class="leader-table">
+          <thead>
+            <tr>
+              <th>HẠNG</th>
+              <th>TÊN KỸ SƯ</th>
+              <th>ĐIỂM</th>
+              <th>THỜI GIAN</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+
+      <div style="text-align: center; margin-top: 20px;">
+        <button id="btnRestartGame" class="btn-cyber-primary" type="button">
+          🔄 THỬ THÁCH LẠI
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    /* ==================================================
+       02. DỮ LIỆU CÂU HỎI CHUẨN HÓA SƯ PHẠM (BÀI 4 - TIN 11)
+       - 18 câu trắc nghiệm: Độ dài các đáp án A, B, C, D đồng đều.
+       - Phân bố đáp án đúng: A: 4 câu, B: 5 câu, C: 5 câu, D: 4 câu.
+       - Chuỗi đáp án: B - C - D - B - C - D - A - C - D - A - B - C - B - D - A - B - A - C.
+       - 2 câu Đúng/Sai (1 Nhận biết, 1 Thông hiểu, 2 Vận dụng).
+       ================================================== */
+    const QUESTION_BANK = [
+      // Câu 1: Nhận biết (CPU) - Đáp án B
+      {
+        id: 1,
+        type: "multiple-choice",
+        level: "Nhận biết",
+        component: "CPU",
+        question: "Bộ phận nào trong máy tính đảm nhiệm chức năng tiếp nhận dữ liệu, thực hiện các phép tính và điều khiển hoạt động của hệ thống?",
+        graphic: "cpu",
+        options: [
+          "Bộ nhớ truy cập ngẫu nhiên lưu trữ tạm thời các chương trình",
+          "Bộ xử lí trung tâm thực hiện các lệnh và điều khiển hệ thống",
+          "Bộ nhớ chỉ đọc lưu các chương trình hệ thống cố định ban đầu",
+          "Ổ đĩa lưu trữ ngoài bảo toàn toàn bộ dữ liệu khi ngắt điện"
+        ],
+        correctAnswer: "B",
+        explanation: "CPU (Central Processing Unit) là bộ xử lí trung tâm, có vai trò xử lí dữ liệu và điều phối mọi hoạt động của các bộ phận khác trong máy tính."
+      },
+      // Câu 2: Nhận biết (Xung nhịp) - Đáp án C
+      {
+        id: 2,
+        type: "multiple-choice",
+        level: "Nhận biết",
+        component: "CPU",
+        question: "Đơn vị đo nào sau đây thường được sử dụng phổ biến nhất để thể hiện tốc độ xung nhịp hoạt động của bộ xử lí trung tâm (CPU)?",
+        graphic: "speed",
+        options: [
+          "Megabyte (MB)",
+          "Gigabyte (GB)",
+          "Gigahertz (GHz)",
+          "Terabyte (TB)"
+        ],
+        correctAnswer: "C",
+        explanation: "Tốc độ xung nhịp của CPU đo bằng Hz (Hertz) và các bội số như MHz, GHz (1 GHz tương đương 1 tỉ chu kì dao động trong một giây)."
+      },
+      // Câu 3: Nhận biết (RAM) - Đáp án D
+      {
+        id: 3,
+        type: "multiple-choice",
+        level: "Nhận biết",
+        component: "RAM",
+        question: "Đặc điểm kĩ thuật cơ bản nhất giúp phân biệt bộ nhớ trong RAM với các loại thiết bị lưu trữ dữ liệu thông thường khác là gì?",
+        graphic: "ram",
+        options: [
+          "Chỉ cho phép hệ thống đọc thông tin cố định và cấm ghi dữ liệu mới",
+          "Lưu trữ dữ liệu an toàn và vĩnh viễn ngay cả khi hệ thống mất điện",
+          "Chứa các chỉ dẫn phần mềm hệ thống do nhà sản xuất bo mạch nạp sẵn",
+          "Lưu trữ dữ liệu tạm thời và toàn bộ thông tin sẽ biến mất khi tắt máy"
+        ],
+        correctAnswer: "D",
+        explanation: "RAM (Random Access Memory) là bộ nhớ khả biến, dữ liệu lưu trữ tạm thời trong phiên làm việc sẽ mất hoàn toàn khi mất nguồn điện."
+      },
+      // Câu 4: Nhận biết (ROM) - Đáp án B
+      {
+        id: 4,
+        type: "multiple-choice",
+        level: "Nhận biết",
+        component: "ROM",
+        question: "Bộ nhớ chỉ đọc ROM (Read Only Memory) trên bo mạch chủ của máy tính được sử dụng chủ yếu để thực hiện mục đích nào sau đây?",
+        graphic: "rom",
+        options: [
+          "Lưu trữ các tập tin văn bản và ứng dụng trò chơi của người dùng",
+          "Lưu trữ các chương trình hệ thống cố định dùng để khởi động máy",
+          "Mở rộng không gian lưu trữ cho các phần mềm đồ họa đang chạy",
+          "Tự động giải phóng toàn bộ nội dung đã lưu mỗi khi khởi động lại"
+        ],
+        correctAnswer: "B",
+        explanation: "ROM lưu trữ các chỉ dẫn phần mềm cố định (như firmware/BIOS) do nhà sản xuất cài sẵn để khởi động hệ thống và không mất khi mất điện."
+      },
+      // Câu 5: Nhận biết (Đơn vị dung lượng) - Đáp án C
+      {
+        id: 5,
+        type: "multiple-choice",
+        level: "Nhận biết",
+        component: "STORAGE",
+        question: "Dung lượng lưu trữ của các linh kiện bộ nhớ như thanh RAM hay ổ cứng máy tính hiện nay thường được tính bằng đơn vị nào?",
+        graphic: "storage",
+        options: [
+          "Hertz (Hz)",
+          "Megahertz (MHz)",
+          "Gigabyte (GB)",
+          "Gigahertz (GHz)"
+        ],
+        correctAnswer: "C",
+        explanation: "Dung lượng bộ nhớ RAM, ROM và ổ cứng được đo bằng Byte và các bội số như KB, MB, GB, TB; trong khi Hz, GHz đo tốc độ xung nhịp."
+      },
+      // Câu 6: Nhận biết (Bộ nhớ ngoài) - Đáp án D
+      {
+        id: 6,
+        type: "multiple-choice",
+        level: "Nhận biết",
+        component: "STORAGE",
+        question: "Thiết bị phần cứng nào sau đây được phân loại thuộc nhóm bộ nhớ ngoài, đảm nhận nhiệm vụ lưu trữ dữ liệu người dùng lâu dài?",
+        graphic: "storage",
+        options: [
+          "Thanh ghi nội bộ của CPU",
+          "Thanh bộ nhớ truy cập RAM",
+          "Chip nhớ chỉ đọc ROM BIOS",
+          "Ổ đĩa cứng thể rắn SSD"
+        ],
+        correctAnswer: "D",
+        explanation: "Ổ cứng HDD/SSD là bộ nhớ ngoài, giúp lưu trữ hệ điều hành, phần mềm và tập tin người dùng lâu dài mà không bị mất khi mất điện."
+      },
+      // Câu 7: Nhận biết (Cấu trúc CPU) - Đáp án A
+      {
+        id: 7,
+        type: "multiple-choice",
+        level: "Nhận biết",
+        component: "CPU",
+        question: "Các khối chức năng cốt lõi nào sau đây kết hợp với nhau tạo thành cấu trúc phần cứng hoàn chỉnh của bộ xử lí trung tâm (CPU)?",
+        graphic: "cpu",
+        options: [
+          "Khối điều khiển (CU), khối số học/logic (ALU) và các thanh ghi",
+          "Khối vi mạch ROM, các khe cắm RAM và cổng kết nối ngoại vi",
+          "Đầu đọc quang học, đĩa từ cơ học và bảng mạch cấp nguồn phụ",
+          "Bộ nhớ flash, hệ thống tản nhiệt khí và các chân cắm tín hiệu"
+        ],
+        correctAnswer: "A",
+        explanation: "Cấu tạo cốt lõi của CPU gồm có: Bộ điều khiển (CU), Bộ số học và logic (ALU) cùng hệ thống các thanh ghi (Registers)."
+      },
+      // Câu 8: Nhận biết (Ưu điểm SSD) - Đáp án C
+      {
+        id: 8,
+        type: "multiple-choice",
+        level: "Nhận biết",
+        component: "STORAGE",
+        question: "Ưu điểm kỹ thuật nổi bật nhất của ổ đĩa cứng thể rắn SSD khi so sánh trực tiếp với ổ đĩa từ cơ học truyền thống HDD là gì?",
+        graphic: "storage",
+        options: [
+          "Giá thành tính trên mỗi đơn vị gigabyte lưu trữ rẻ hơn đáng kể",
+          "Sử dụng các phiến đĩa kim loại quay tròn để tăng độ bền cơ học",
+          "Tốc độ đọc ghi dữ liệu vượt trội và khả năng chống sốc rất cao",
+          "Dữ liệu tự động biến mất khi ngắt nguồn điện để bảo mật tốt hơn"
+        ],
+        correctAnswer: "C",
+        explanation: "SSD sử dụng chip nhớ flash bán dẫn, không chứa bộ phận cơ học quay nên đạt tốc độ truyền tải cực nhanh và chống sốc cơ học tốt hơn HDD."
+      },
+      // Câu 9: Thông hiểu (Tràn bộ nhớ RAM) - Đáp án D
+      {
+        id: 9,
+        type: "multiple-choice",
+        level: "Thông hiểu",
+        component: "RAM",
+        question: "Khi người dùng mở đồng thời quá nhiều phần mềm đồ họa nặng khiến máy tính bị chậm và đơ giật, nguyên nhân chính là do:",
+        graphic: "ram",
+        options: [
+          "Tốc độ đường truyền mạng Internet bị ngắt quãng đột ngột",
+          "Bộ nhớ chỉ đọc ROM trên bo mạch chủ đã bị ghi đè toàn bộ",
+          "Màn hình hiển thị đã cạn kiệt năng lượng phát sáng điểm ảnh",
+          "Dung lượng RAM bị đầy khiến hệ thống phải hoán đổi qua ổ cứng"
+        ],
+        correctAnswer: "D",
+        explanation: "Khi dung lượng RAM không đủ, hệ điều hành phải dùng một phần ổ cứng làm bộ nhớ ảo (paging file); tốc độ ổ cứng chậm hơn RAM rất nhiều dẫn đến đơ máy."
+      },
+      // Câu 10: Thông hiểu (Ý nghĩa GHz) - Đáp án A
+      {
+        id: 10,
+        type: "multiple-choice",
+        level: "Thông hiểu",
+        component: "SPEED",
+        question: "Thông số kĩ thuật ghi 'CPU 3.2 GHz' trên vỏ hộp của một bộ vi xử lý máy tính cung cấp cho chúng ta thông tin chính xác nào?",
+        graphic: "speed",
+        options: [
+          "Xung nhịp tạo ra 3.2 tỉ chu kì dao động trong một giây hoạt động",
+          "Dung lượng bộ nhớ trong của CPU có thể chứa tối đa 3.2 Gigabyte",
+          "Mức điện áp tiêu thụ tối đa của chip xử lí này là 3.2 Kilowatt",
+          "Tốc độ truyền tải tín hiệu qua dây cáp dữ liệu đạt 3.2 Megabyte"
+        ],
+        correctAnswer: "A",
+        explanation: "3.2 GHz (Gigahertz) thể hiện tần số xung nhịp đồng hồ của CPU, tương đương 3.2 tỉ chu kì dao động phát xung trong một giây."
+      },
+      // Câu 11: Thông hiểu (So sánh RAM và ROM) - Đáp án B
+      {
+        id: 11,
+        type: "multiple-choice",
+        level: "Thông hiểu",
+        component: "ROM",
+        question: "Nhận định nào sau đây phân biệt CHÍNH XÁC về bản chất hoạt động giữa bộ nhớ truy cập ngẫu nhiên RAM và bộ nhớ chỉ đọc ROM?",
+        graphic: "ram",
+        options: [
+          "Dữ liệu trong RAM không thể thay đổi; dữ liệu trong ROM thay đổi liên tục",
+          "RAM dùng đọc ghi linh hoạt khi chạy ứng dụng; ROM lưu chỉ dẫn khởi động",
+          "Tắt máy tính thì RAM giữ nguyên dữ liệu; dữ liệu trên ROM bị xóa trắng",
+          "Dung lượng của chip ROM luôn lớn hơn dung lượng các thanh RAM gắn ngoài"
+        ],
+        correctAnswer: "B",
+        explanation: "RAM cho phép đọc/ghi dữ liệu tạm thời phục vụ hệ điều hành và ứng dụng; ROM chứa dữ liệu cố định do nhà sản xuất cài để đánh thức phần cứng."
+      },
+      // Câu 12: Thông hiểu (Quy đổi dung lượng) - Đáp án C
+      {
+        id: 12,
+        type: "multiple-choice",
+        level: "Thông hiểu",
+        component: "STORAGE",
+        question: "Một ổ cứng thể rắn di động có thông số dung lượng ghi trên bao bì là 1 TB thì tương đương xấp xỉ với bao nhiêu Gigabyte (GB)?",
+        graphic: "storage",
+        options: [
+          "Xấp xỉ khoảng 10 GB",
+          "Xấp xỉ khoảng 100 GB",
+          "Xấp xỉ khoảng 1 000 GB",
+          "Xấp xỉ khoảng 1 000 000 GB"
+        ],
+        correctAnswer: "C",
+        explanation: "Theo các bậc lũy thừa dung lượng chuẩn trong tin học: 1 TB (Terabyte) = 1 024 GB (hay xấp xỉ khoảng 1 000 GB theo hệ thập phân sản xuất)."
+      },
+      // Câu 13: Thông hiểu (Quy trình thực thi lệnh) - Đáp án B
+      {
+        id: 13,
+        type: "multiple-choice",
+        level: "Thông hiểu",
+        component: "RAM",
+        question: "Khi bạn nhấp đúp chuột để khởi chạy một ứng dụng văn phòng, luồng vận chuyển dữ liệu diễn ra theo trình tự nào sau đây?",
+        graphic: "storage",
+        options: [
+          "Dữ liệu từ bàn phím truyền trực tiếp vào chip ROM rồi xuất ra màn hình",
+          "Dữ liệu từ ổ cứng được nạp vào bộ nhớ RAM trước khi đưa vào CPU xử lí",
+          "Dữ liệu từ chip ROM tự động ghi đè lên toàn bộ vùng nhớ của ổ cứng SSD",
+          "Dữ liệu từ CPU ghi trực tiếp vào ổ cứng mà hoàn toàn không thông qua RAM"
+        ],
+        correctAnswer: "B",
+        explanation: "Mọi chương trình lưu ở bộ nhớ ngoài (ổ cứng) muốn thực thi đều phải được hệ điều hành nạp vào RAM trước khi CPU nạp lệnh để xử lý."
+      },
+      // Câu 14: Thông hiểu (Tản nhiệt CPU) - Đáp án D
+      {
+        id: 14,
+        type: "multiple-choice",
+        level: "Thông hiểu",
+        component: "CPU",
+        question: "Tại sao các bộ xử lí trung tâm (CPU) hiệu năng cao luôn bắt buộc phải gắn kèm khối tản nhiệt và quạt làm mát chuyên dụng?",
+        graphic: "cpu",
+        options: [
+          "Nhằm ngăn chặn các xung điện từ trường phát tán gây nhiễu màn hình",
+          "Nhằm làm tăng thêm dung lượng lưu trữ cho các thanh ghi trong chip",
+          "Nhằm chuyển đổi dòng điện một chiều thành dòng điện xoay chiều an toàn",
+          "Nhằm giải phóng nhiệt lượng khổng lồ tránh hư hỏng hoặc sụt giảm tốc độ"
+        ],
+        correctAnswer: "D",
+        explanation: "CPU gồm hàng tỉ transistor đóng ngắt ở tần số rất cao tạo ra nhiệt lượng cực lớn; tản nhiệt giúp CPU không bị quá nhiệt dẫn đến sụt tốc hoặc cháy nổ."
+      },
+      // Câu 15: Vận dụng (Nhu cầu đồ họa / Tràn RAM) - Đáp án A
+      {
+        id: 15,
+        type: "multiple-choice",
+        level: "Vận dụng",
+        component: "RAM",
+        question: "Máy tính của bạn Nam có cấu hình 4 GB RAM. Khi mở phần mềm dựng video, hệ thống liên tục báo tràn bộ nhớ. Bạn Nam nên ưu tiên:",
+        graphic: "ram",
+        options: [
+          "Nâng cấp dung lượng bộ nhớ RAM lên mức 16 GB để đủ không gian đệm",
+          "Thay thế màn hình hiển thị có kích thước khung hình lớn và sắc nét hơn",
+          "Lắp thêm một chiếc quạt làm mát mới vào vị trí mặt trước của vỏ máy",
+          "Đổi sang một bàn phím cơ công nghệ mới có tốc độ nhận phím nhanh hơn"
+        ],
+        correctAnswer: "A",
+        explanation: "Hiện tượng tràn bộ nhớ (Out of Memory) khi xử lý tác vụ nặng xuất phát từ việc thiếu RAM vật lý. Nâng cấp RAM lên 16 GB là giải pháp công nghệ chính xác."
+      },
+      // Câu 16: Vận dụng (Tăng tốc khởi động Windows) - Đáp án B
+      {
+        id: 16,
+        type: "multiple-choice",
+        level: "Vận dụng",
+        component: "STORAGE",
+        question: "Một máy tính học tập khởi động hệ điều hành mất tới 3 phút do đang sử dụng ổ đĩa cơ HDD cũ. Phương án nâng cấp tối ưu nhất là:",
+        graphic: "storage",
+        options: [
+          "Cắm thêm một USB di động vào cổng sau máy để làm bộ nhớ tăng tốc",
+          "Lắp thêm một ổ cứng thể rắn SSD và cài đặt hệ điều hành lên ổ đĩa này",
+          "Thay đổi vi mạch chip ROM BIOS gắn trên bảng mạch chủ của máy tính",
+          "Mua thêm bộ nguồn công suất cao hơn để cung cấp thêm điện cho ổ HDD"
+        ],
+        correctAnswer: "B",
+        explanation: "SSD có tốc độ đọc ghi dữ liệu ngẫu nhiên vượt trội HDD từ 4-10 lần, giúp rút ngắn thời gian nạp hệ điều hành từ vài phút xuống dưới 15 giây."
+      },
+      // Câu 17: Vận dụng (Đọc thông số kỹ thuật) - Đáp án A
+      {
+        id: 17,
+        type: "multiple-choice",
+        level: "Vận dụng",
+        component: "SPEED",
+        question: "Một bộ máy tính có thông số niêm yết: 'CPU 3.6 GHz, RAM 16 GB, SSD 512 GB'. Nhận định nào sau đây giải thích ĐÚNG về máy tính này?",
+        graphic: "speed",
+        options: [
+          "CPU đạt xung nhịp 3.6 GHz, bộ nhớ trong 16 GB và ổ cứng lưu trữ 512 GB",
+          "CPU chứa được 3.6 GB dữ liệu, dung lượng ổ đĩa là 16 GB và RAM là 512 GB",
+          "Bộ nhớ tạm là 512 GB, xung nhịp đạt 16 GHz và ổ đĩa lưu trữ là 3.6 GB",
+          "Xung nhịp CPU là 512 GHz, bộ nhớ trong là 3.6 GB và ổ đĩa SSD là 16 GB"
+        ],
+        correctAnswer: "A",
+        explanation: "Các giá trị thể hiện: CPU có xung nhịp 3.6 GHz, RAM (bộ nhớ trong) dung lượng 16 GB, SSD (bộ nhớ ngoài lưu trữ) dung lượng 512 GB."
+      },
+      // Câu 18: Vận dụng (Mất điện mất dữ liệu) - Đáp án C
+      {
+        id: 18,
+        type: "multiple-choice",
+        level: "Vận dụng",
+        component: "RAM",
+        question: "Khi đang nhập văn bản mà chưa kịp nhấn lệnh Save thì bất ngờ bị cúp điện, dữ liệu vừa nhập bị mất hoàn toàn. Lí do kỹ thuật là:",
+        graphic: "ram",
+        options: [
+          "Toàn bộ dữ liệu đang soạn thảo đã được ghi đè nhầm vào trong chip ROM",
+          "Ổ cứng SSD tự động kích hoạt tính năng xóa sạch dữ liệu khi mất điện",
+          "Dữ liệu mới nhập chỉ tạm trú trên RAM nên sẽ bị xóa sạch khi mất nguồn",
+          "Bộ vi xử lí CPU đã tự động gửi toàn bộ văn bản ra cổng kết nối màn hình"
+        ],
+        correctAnswer: "C",
+        explanation: "Văn bản chưa nhấn Save mới chỉ nằm trên RAM (bộ nhớ tạm). Khi mất điện, nguồn nuôi bị ngắt khiến dữ liệu trong RAM mất hoàn toàn."
+      },
+      // Câu 19: Đúng / Sai 4 nhận định (Chủ đề CPU & Tốc độ xung nhịp)
+      {
+        id: 19,
+        type: "true-false-group",
+        level: "Tổng hợp",
+        component: "CPU",
+        question: "Xét về cấu tạo và các thông số hoạt động của Bộ xử lí trung tâm (CPU) trong máy tính, hãy xác định mỗi nhận định sau là ĐÚNG hay SAI:",
+        graphic: "cpu",
+        statements: [
+          {
+            label: "a",
+            level: "Nhận biết",
+            text: "CPU đảm nhiệm vai trò xử lí các phép toán số học, logic và điều phối hoạt động chung của toàn bộ máy tính.",
+            correct: true,
+            explanation: "ĐÚNG: Đây là chức năng cốt lõi của CPU (bộ não điều khiển toàn hệ thống)."
+          },
+          {
+            label: "b",
+            level: "Thông hiểu",
+            text: "Tốc độ xung nhịp hoạt động của CPU được đo lường chính xác bằng đơn vị Gigabyte (GB).",
+            correct: false,
+            explanation: "SAI: Gigabyte (GB) là đơn vị đo dung lượng bộ nhớ; xung nhịp CPU đo bằng Hertz (Hz, GHz)."
+          },
+          {
+            label: "c",
+            level: "Vận dụng",
+            text: "Khi xét hai CPU cùng thế hệ kiến trúc, CPU nào có thông số GHz cao hơn sẽ thực hiện được nhiều chu kì lệnh hơn trong một giây.",
+            correct: true,
+            explanation: "ĐÚNG: Xung nhịp cao hơn đồng nghĩa số chu kì dao động phát xung trong 1 giây nhiều hơn."
+          },
+          {
+            label: "d",
+            level: "Vận dụng",
+            text: "Để tăng tốc độ tính toán cho CPU, người dùng chỉ cần cắm thêm thanh RAM mà không cần quan tâm đến nhiệt độ của vi xử lý.",
+            correct: false,
+            explanation: "SAI: Thêm RAM chỉ tăng sức chứa tạm thời; nếu CPU quá nóng không tản nhiệt kịp sẽ bị giảm xung nhịp bảo vệ máy."
+          }
+        ]
+      },
+      // Câu 20: Đúng / Sai 4 nhận định (Chủ đề Bộ nhớ trong & Bộ nhớ ngoài)
+      {
+        id: 20,
+        type: "true-false-group",
+        level: "Tổng hợp",
+        component: "STORAGE",
+        question: "Xét về đặc tính lưu trữ và giải pháp công nghệ của bộ nhớ trong (RAM, ROM) và bộ nhớ ngoài (HDD, SSD), hãy xác định mỗi nhận định sau là ĐÚNG hay SAI:",
+        graphic: "ram",
+        statements: [
+          {
+            label: "a",
+            level: "Nhận biết",
+            text: "Dữ liệu được lưu trữ tạm thời trên bộ nhớ RAM sẽ bị biến mất hoàn toàn khi máy tính bị ngắt nguồn điện.",
+            correct: true,
+            explanation: "ĐÚNG: RAM là bộ nhớ khả biến (volatile memory), cần dòng điện liên tục để giữ dữ liệu."
+          },
+          {
+            label: "b",
+            level: "Thông hiểu",
+            text: "Bộ nhớ chỉ đọc ROM là nơi người dùng trực tiếp lưu trữ các tài liệu học tập và hình ảnh cá nhân hàng ngày.",
+            correct: false,
+            explanation: "SAI: Tài liệu học tập lưu ở ổ cứng HDD/SSD; ROM chứa chương trình hệ thống cố định (BIOS/firmware)."
+          },
+          {
+            label: "c",
+            level: "Vận dụng",
+            text: "Khi máy tính khởi động quá chậm do dùng ổ HDD cơ học, thay thế bằng ổ thể rắn SSD là giải pháp công nghệ rất hiệu quả.",
+            correct: true,
+            explanation: "ĐÚNG: Ổ SSD có tốc độ đọc ngẫu nhiên nhanh gấp nhiều lần HDD, tối ưu vượt bậc thời gian khởi động."
+          },
+          {
+            label: "d",
+            level: "Vận dụng",
+            text: "Khi phân vùng ổ đĩa C của máy tính báo hết dung lượng lưu trữ, giải pháp kỹ thuật triệt để nhất là gắn thêm một thanh RAM 8 GB.",
+            correct: false,
+            explanation: "SAI: Phân vùng ổ đĩa C thuộc ổ cứng (bộ nhớ ngoài). Cần dọn dẹp hoặc nâng cấp ổ cứng; cắm thêm RAM không tăng dung lượng ổ C."
+          }
+        ]
+      }
+    ];
+
+    /* ==================================================
+       03. HỆ THỐNG ĐỒ HỌA SVG NỘI TUYẾN
+       ================================================== */
+    const GRAPHICS = {
+      cpu: `
+        <svg width="220" height="110" viewBox="0 0 220 110" fill="none">
+          <rect x="60" y="10" width="100" height="90" rx="10" fill="#0d142b" stroke="#00f3ff" stroke-width="2.5"/>
+          <rect x="75" y="25" width="70" height="60" rx="6" fill="#1b2447" stroke="#ff007f" stroke-width="1.8"/>
+          <text x="110" y="52" fill="#00f3ff" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">CPU CORE</text>
+          <text x="110" y="68" fill="#ffee00" font-family="monospace" font-size="10" text-anchor="middle">3.6 GHz</text>
+          <path d="M45 30h15M45 45h15M45 60h15M45 75h15M160 30h15M160 45h15M160 60h15M160 75h15M80 0v10M110 0v10M140 0v10M80 100v10M110 100v10M140 100v10" stroke="#00f3ff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      `,
+      ram: `
+        <svg width="220" height="90" viewBox="0 0 220 90" fill="none">
+          <rect x="15" y="25" width="190" height="42" rx="4" fill="#0b1b2b" stroke="#00ff88" stroke-width="2.2"/>
+          <rect x="30" y="32" width="22" height="26" fill="#162c45" stroke="#00f3ff"/>
+          <rect x="62" y="32" width="22" height="26" fill="#162c45" stroke="#00f3ff"/>
+          <rect x="94" y="32" width="22" height="26" fill="#162c45" stroke="#00f3ff"/>
+          <rect x="126" y="32" width="22" height="26" fill="#162c45" stroke="#00f3ff"/>
+          <rect x="158" y="32" width="22" height="26" fill="#162c45" stroke="#00f3ff"/>
+          <line x1="20" y1="67" x2="200" y2="67" stroke="#ffee00" stroke-width="3" stroke-dasharray="4 3"/>
+          <text x="110" y="20" fill="#00ff88" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">RAM DDR4 16GB</text>
+        </svg>
+      `,
+      rom: `
+        <svg width="220" height="90" viewBox="0 0 220 90" fill="none">
+          <rect x="50" y="20" width="120" height="50" rx="6" fill="#160e29" stroke="#9d00ff" stroke-width="2"/>
+          <circle cx="65" cy="45" r="4" fill="#ff007f"/>
+          <text x="115" y="44" fill="#f8fafc" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">BIOS / ROM</text>
+          <text x="115" y="58" fill="#00f3ff" font-family="monospace" font-size="9" text-anchor="middle">READ-ONLY</text>
+          <path d="M40 30h10M40 45h10M40 60h10M170 30h10M170 45h10M170 60h10" stroke="#9d00ff" stroke-width="2"/>
+        </svg>
+      `,
+      storage: `
+        <svg width="220" height="95" viewBox="0 0 220 95" fill="none">
+          <rect x="40" y="15" width="140" height="68" rx="8" fill="#09152b" stroke="#00f3ff" stroke-width="2"/>
+          <circle cx="110" cy="48" r="22" stroke="#ff007f" stroke-width="1.8" fill="#070c1a"/>
+          <circle cx="110" cy="48" r="7" fill="#ffee00"/>
+          <line x1="110" y1="48" x2="128" y2="60" stroke="#00ff88" stroke-width="2"/>
+          <text x="110" y="12" fill="#00f3ff" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">STORAGE: SSD / HDD</text>
+        </svg>
+      `,
+      speed: `
+        <svg width="220" height="95" viewBox="0 0 220 95" fill="none">
+          <path d="M40 75 A 50 50 0 0 1 180 75" stroke="rgba(255,255,255,0.2)" stroke-width="8" stroke-linecap="round"/>
+          <path d="M40 75 A 50 50 0 0 1 150 35" stroke="#00f3ff" stroke-width="8" stroke-linecap="round"/>
+          <line x1="110" y1="75" x2="145" y2="45" stroke="#ff007f" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="110" cy="75" r="6" fill="#ffee00"/>
+          <text x="110" y="90" fill="#00ff88" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">PERFORMANCE: GHz / GB</text>
+        </svg>
+      `
+    };
+
+    /* ==================================================
+       04. QUẢN LÝ TRẠNG THÁI GAME & BỘ ĐẾM 20 PHÚT
+       ================================================== */
+    const EXAM_MINUTES = 20;
+    const TOTAL_MS = EXAM_MINUTES * 60 * 1000;
+
+    const state = {
+      playerName: "Kỹ sư CyberCore",
+      currentIndex: 0,
+      score: 0.0,
+      correctCount: 0,
+      wrongCount: 0,
+      soundEnabled: true,
+      selectedChoice: null,
+      selectedTF: {},
+      isConfirmed: false,
+      startTime: null,
+      endTime: null,
+      timerInterval: null,
+      elapsedMs: 0,
+      isTimeUp: false
+    };
+
+    /* ==================================================
+       05. HỆ THỐNG ÂM THANH WEB AUDIO NỘI TUYẾN
+       ================================================== */
+    let audioCtx = null;
+    let bgPulseTimer = null;
+
+    function initAudio() {
+      try {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) audioCtx = new AudioContextClass();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      } catch (e) {
+        console.warn("Audio Context init prevented:", e);
+      }
+    }
+
+    function playSynthTone(freq, duration, type = 'sine', gainVal = 0.1) {
+      if (!state.soundEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const now = audioCtx.currentTime;
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(gainVal, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      } catch (e) {}
+    }
+
+    function soundClick() {
+      playSynthTone(550, 0.05, 'triangle', 0.06);
+    }
+
+    function soundCorrect() {
+      playSynthTone(523.25, 0.12, 'sine', 0.1);
+      setTimeout(() => playSynthTone(659.25, 0.14, 'sine', 0.1), 70);
+      setTimeout(() => playSynthTone(783.99, 0.22, 'sine', 0.12), 140);
+    }
+
+    function soundWrong() {
+      playSynthTone(220, 0.14, 'sawtooth', 0.08);
+      setTimeout(() => playSynthTone(164.81, 0.2, 'sawtooth', 0.08), 80);
+    }
+
+    function soundComplete() {
+      const notes = [440, 554.37, 659.25, 880];
+      notes.forEach((f, i) => {
+        setTimeout(() => playSynthTone(f, 0.35, 'triangle', 0.12), i * 110);
+      });
+    }
+
+    function startBgMusic() {
+      if (bgPulseTimer || !audioCtx) return;
+      const chords = [261.63, 329.63, 392.00];
+      let idx = 0;
+      bgPulseTimer = setInterval(() => {
+        if (state.soundEnabled && audioCtx) {
+          playSynthTone(chords[idx], 0.9, 'sine', 0.015);
+          idx = (idx + 1) % chords.length;
+        }
+      }, 2200);
+    }
+
+    /* ==================================================
+       06. CÁC PHẦN TỬ DOM
+       ================================================== */
+    const screenWelcome = document.getElementById("screenWelcome");
+    const screenRules = document.getElementById("screenRules");
+    const screenQuest = document.getElementById("screenQuest");
+    const screenReport = document.getElementById("screenReport");
+
+    const inputPlayerName = document.getElementById("inputPlayerName");
+    const btnStartExplore = document.getElementById("btnStartExplore");
+    const btnBeginTest = document.getElementById("btnBeginTest");
+    const btnToggleSound = document.getElementById("btnToggleSound");
+    const soundIcon = document.getElementById("soundIcon");
+    const soundLabel = document.getElementById("soundLabel");
+
+    const hudPlayerName = document.getElementById("hudPlayerName");
+    const hudTaskIndex = document.getElementById("hudTaskIndex");
+    const hudScoreVal = document.getElementById("hudScoreVal");
+    const hudTimerBadge = document.getElementById("hudTimerBadge");
+    const hudProgressBar = document.getElementById("hudProgressBar");
+
+    const taskOrderLabel = document.getElementById("taskOrderLabel");
+    const taskDiffBadge = document.getElementById("taskDiffBadge");
+    const taskQuestionText = document.getElementById("taskQuestionText");
+    const graphicContainer = document.getElementById("graphicContainer");
+
+    const mcContainer = document.getElementById("mcContainer");
+    const tfContainer = document.getElementById("tfContainer");
+    const feedbackBanner = document.getElementById("feedbackBanner");
+    const feedbackTitle = document.getElementById("feedbackTitle");
+    const feedbackBody = document.getElementById("feedbackBody");
+
+    const btnConfirmAnswer = document.getElementById("btnConfirmAnswer");
+    const btnNextTask = document.getElementById("btnNextTask");
+
+    const resPlayerNameDisplay = document.getElementById("resPlayerNameDisplay");
+    const resFinalScore = document.getElementById("resFinalScore");
+    const resEvaluationText = document.getElementById("resEvaluationText");
+    const resCorrectCount = document.getElementById("resCorrectCount");
+    const resWrongCount = document.getElementById("resWrongCount");
+    const resTimeUsed = document.getElementById("resTimeUsed");
+    const leaderboardBody = document.getElementById("leaderboardBody");
+    const btnRestartGame = document.getElementById("btnRestartGame");
+
+    function switchScreen(target) {
+      [screenWelcome, screenRules, screenQuest, screenReport].forEach(s => s.classList.remove("active"));
+      target.classList.add("active");
+    }
+
+    btnToggleSound.addEventListener("click", () => {
+      state.soundEnabled = !state.soundEnabled;
+      if (state.soundEnabled) {
+        soundIcon.textContent = "🔊";
+        soundLabel.textContent = "SOUND ON";
+        initAudio();
+      } else {
+        soundIcon.textContent = "🔇";
+        soundLabel.textContent = "SOUND OFF";
+      }
+    });
+
+    btnStartExplore.addEventListener("click", () => {
+      initAudio();
+      soundClick();
+      const raw = inputPlayerName.value.trim();
+      if (raw) state.playerName = raw;
+      hudPlayerName.textContent = state.playerName.toUpperCase();
+      switchScreen(screenRules);
+    });
+
+    btnBeginTest.addEventListener("click", () => {
+      initAudio();
+      soundClick();
+      startBgMusic();
+      startQuestSession();
+    });
+
+    function startQuestSession() {
+      state.currentIndex = 0;
+      state.score = 0.0;
+      state.correctCount = 0;
+      state.wrongCount = 0;
+      state.isTimeUp = false;
+
+      startCountdownTimer();
+      switchScreen(screenQuest);
+      renderTask();
+    }
+
+    function startCountdownTimer() {
+      stopTimer();
+      state.startTime = Date.now();
+      state.endTime = state.startTime + TOTAL_MS;
+      state.elapsedMs = 0;
+
+      updateTimerUI(TOTAL_MS);
+
+      state.timerInterval = setInterval(() => {
+        const now = Date.now();
+        const remain = state.endTime - now;
+        state.elapsedMs = Math.min(TOTAL_MS, now - state.startTime);
+
+        if (remain <= 0) {
+          stopTimer();
+          updateTimerUI(0);
+          handleTimeOut();
+          return;
+        }
+
+        updateTimerUI(remain);
+      }, 250);
+    }
+
+    function stopTimer() {
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+    }
+
+    function updateTimerUI(remainMs) {
+      if (remainMs < 0) remainMs = 0;
+      const totalSec = Math.ceil(remainMs / 1000);
+      const m = Math.floor(totalSec / 60);
+      const s = totalSec % 60;
+      hudTimerBadge.textContent = `⏱ ${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+      if (totalSec <= 180) {
+        hudTimerBadge.classList.add("warning");
+      } else {
+        hudTimerBadge.classList.remove("warning");
+      }
+    }
+
+    function handleTimeOut() {
+      state.isTimeUp = true;
+      soundWrong();
+      alert("⏱ ĐÃ HẾT 20 PHÚT! Hệ thống CyberCore tự động nộp bài và thẩm định kết quả.");
+      finishQuest();
+    }
+
+    /* ==================================================
+       07. RENDER CÂU HỎI & XỬ LÝ LỰA CHỌN
+       ================================================== */
+    function renderTask() {
+      const q = QUESTION_BANK[state.currentIndex];
+      state.isConfirmed = false;
+      state.selectedChoice = null;
+      state.selectedTF = {};
+
+      const currentNum = state.currentIndex + 1;
+      const total = QUESTION_BANK.length;
+
+      hudTaskIndex.textContent = `${String(currentNum).padStart(2, '0')}/${String(total).padStart(2, '0')}`;
+      hudScoreVal.textContent = state.score.toFixed(1);
+      hudProgressBar.style.width = `${(state.currentIndex / total) * 100}%`;
+
+      taskOrderLabel.textContent = `CHALLENGE #${String(currentNum).padStart(2, '0')} // [${q.component}]`;
+      taskDiffBadge.textContent = q.level.toUpperCase();
+      taskDiffBadge.className = "diff-badge " + 
+        (q.level === "Nhận biết" ? "diff-nhan-biet" : 
+        (q.level === "Thông hiểu" ? "diff-thong-hieu" : "diff-van-dung"));
+
+      taskQuestionText.textContent = q.question;
+
+      graphicContainer.innerHTML = GRAPHICS[q.graphic] || GRAPHICS.cpu;
+
+      feedbackBanner.style.display = "none";
+      btnConfirmAnswer.style.display = "inline-flex";
+      btnConfirmAnswer.disabled = true;
+      btnNextTask.style.display = "none";
+
+      if (q.type === "multiple-choice") {
+        tfContainer.style.display = "none";
+        mcContainer.style.display = "grid";
+        renderMCOptions(q);
+      } else {
+        mcContainer.style.display = "none";
+        tfContainer.style.display = "flex";
+        renderTFStatements(q);
+      }
+    }
+
+    function renderMCOptions(q) {
+      mcContainer.innerHTML = "";
+      const letters = ["A", "B", "C", "D"];
+
+      q.options.forEach((optText, idx) => {
+        const card = document.createElement("div");
+        card.className = "opt-card";
+        card.dataset.letter = letters[idx];
+
+        const key = document.createElement("span");
+        key.className = "opt-key";
+        key.textContent = letters[idx];
+
+        const val = document.createElement("span");
+        val.className = "opt-val";
+        val.textContent = optText;
+
+        card.appendChild(key);
+        card.appendChild(val);
+
+        card.addEventListener("click", () => {
+          if (state.isConfirmed || state.isTimeUp) return;
+          soundClick();
+          const all = mcContainer.querySelectorAll(".opt-card");
+          all.forEach(c => c.classList.remove("selected"));
+          card.classList.add("selected");
+          state.selectedChoice = letters[idx];
+          btnConfirmAnswer.disabled = false;
+        });
+
+        mcContainer.appendChild(card);
+      });
+    }
+
+    function renderTFStatements(q) {
+      tfContainer.innerHTML = "";
+
+      q.statements.forEach(st => {
+        const row = document.createElement("div");
+        row.className = "tf-row";
+        row.id = `tfRow_${st.label}`;
+
+        const top = document.createElement("div");
+        top.className = "tf-top";
+
+        const text = document.createElement("div");
+        text.className = "tf-text";
+        text.innerHTML = `<strong>${st.label})</strong> [${st.level}] ${st.text}`;
+
+        const btns = document.createElement("div");
+        btns.className = "tf-btn-pair";
+
+        const btnT = document.createElement("button");
+        btnT.type = "button";
+        btnT.className = "btn-tf";
+        btnT.textContent = "ĐÚNG";
+        btnT.id = `btnTF_${st.label}_true`;
+
+        const btnF = document.createElement("button");
+        btnF.type = "button";
+        btnF.className = "btn-tf";
+        btnF.textContent = "SAI";
+        btnF.id = `btnTF_${st.label}_false`;
+
+        btnT.addEventListener("click", () => {
+          if (state.isConfirmed || state.isTimeUp) return;
+          soundClick();
+          state.selectedTF[st.label] = true;
+          btnT.classList.add("active-true");
+          btnF.classList.remove("active-false");
+          checkTFReady(q);
+        });
+
+        btnF.addEventListener("click", () => {
+          if (state.isConfirmed || state.isTimeUp) return;
+          soundClick();
+          state.selectedTF[st.label] = false;
+          btnF.classList.add("active-false");
+          btnT.classList.remove("active-true");
+          checkTFReady(q);
+        });
+
+        btns.appendChild(btnT);
+        btns.appendChild(btnF);
+        top.appendChild(text);
+        top.appendChild(btns);
+
+        const exp = document.createElement("div");
+        exp.className = "tf-exp-line";
+        exp.id = `tfExp_${st.label}`;
+
+        row.appendChild(top);
+        row.appendChild(exp);
+        tfContainer.appendChild(row);
+      });
+    }
+
+    function checkTFReady(q) {
+      const keys = Object.keys(state.selectedTF);
+      btnConfirmAnswer.disabled = (keys.length < q.statements.length);
+    }
+
+    btnConfirmAnswer.addEventListener("click", () => {
+      const q = QUESTION_BANK[state.currentIndex];
+      if (state.isConfirmed || state.isTimeUp) return;
+
+      if (q.type === "multiple-choice") {
+        if (!state.selectedChoice) return;
+        confirmMC(q);
+      } else {
+        if (Object.keys(state.selectedTF).length < q.statements.length) {
+          alert("⚠️ Bạn cần xác định ĐÚNG hoặc SAI cho đầy đủ 4 nhận định trước khi xác nhận!");
+          return;
+        }
+        confirmTF(q);
+      }
+    });
+
+    function confirmMC(q) {
+      state.isConfirmed = true;
+      const isCorrect = (state.selectedChoice === q.correctAnswer);
+
+      if (isCorrect) {
+        state.score += 0.5; // 18 câu trắc nghiệm * 0.5 = 9.0 điểm
+        state.correctCount++;
+        soundCorrect();
+        feedbackBanner.className = "feedback-banner success";
+        feedbackTitle.innerHTML = "✓ XUẤT SẮC! KỸ SƯ CYBERCORE ĐÃ XÁC ĐỊNH CHÍNH XÁC LINH KIỆN.";
+      } else {
+        state.wrongCount++;
+        soundWrong();
+        feedbackBanner.className = "feedback-banner error";
+        feedbackTitle.innerHTML = "✗ CHƯA CHÍNH XÁC – HÃY ĐỌC KĨ LỜI GIẢI DƯỚI ĐÂY:";
+      }
+
+      hudScoreVal.textContent = state.score.toFixed(1);
+
+      const allCards = mcContainer.querySelectorAll(".opt-card");
+      allCards.forEach(c => {
+        c.classList.add("disabled");
+        const letter = c.dataset.letter;
+        if (letter === q.correctAnswer) {
+          c.classList.add("correct-ans");
+        } else if (letter === state.selectedChoice && !isCorrect) {
+          c.classList.add("wrong-ans");
+        }
+      });
+
+      feedbackBody.textContent = `Đáp án đúng là ${q.correctAnswer}. ${q.explanation}`;
+      feedbackBanner.style.display = "block";
+
+      btnConfirmAnswer.style.display = "none";
+      btnNextTask.style.display = "inline-flex";
+      btnNextTask.focus();
+    }
+
+    function confirmTF(q) {
+      state.isConfirmed = true;
+      let correctSub = 0;
+
+      q.statements.forEach(st => {
+        const pick = state.selectedTF[st.label];
+        const isStCorrect = (pick === st.correct);
+        if (isStCorrect) correctSub++;
+
+        const row = document.getElementById(`tfRow_${st.label}`);
+        const btnT = document.getElementById(`btnTF_${st.label}_true`);
+        const btnF = document.getElementById(`btnTF_${st.label}_false`);
+        const exp = document.getElementById(`tfExp_${st.label}`);
+
+        btnT.disabled = true;
+        btnF.disabled = true;
+
+        if (st.correct === true) btnT.classList.add("correct-true");
+        else btnF.classList.add("correct-false");
+
+        if (!isStCorrect) {
+          row.classList.add("wrong-row");
+          if (pick === true) btnT.classList.add("wrong-clicked");
+          else btnF.classList.add("wrong-clicked");
+          exp.innerHTML = `<span style="color: var(--neon-red); font-weight:700;">✗ Chưa đúng</span> – Đáp án: <strong>${st.correct ? "ĐÚNG" : "SAI"}</strong>. ${st.explanation}`;
+        } else {
+          row.classList.add("correct-row");
+          exp.innerHTML = `<span style="color: var(--neon-green); font-weight:700;">✓ Chính xác</span>. ${st.explanation}`;
+        }
+        exp.classList.add("show");
+      });
+
+      const earned = correctSub * 0.125; // 2 câu Đúng/Sai * 4 ý * 0.125 = 1.0 điểm (Tổng 10đ)
+      state.score += earned;
+      if (correctSub === 4) {
+        state.correctCount++;
+        soundCorrect();
+      } else {
+        state.wrongCount++;
+        soundWrong();
+      }
+
+      hudScoreVal.textContent = state.score.toFixed(1);
+
+      feedbackBanner.className = "feedback-banner success";
+      feedbackTitle.innerHTML = `📋 KẾT QUẢ ĐÚNG/SAI: ${correctSub}/4 NHẬN ĐỊNH ĐÚNG (+${earned.toFixed(2)}đ)`;
+      feedbackBody.textContent = "Hãy rà soát kỹ lại lời giải chi tiết của từng nhận định trước khi chuyển thử thách.";
+      feedbackBanner.style.display = "block";
+
+      btnConfirmAnswer.style.display = "none";
+      btnNextTask.style.display = "inline-flex";
+      btnNextTask.focus();
+    }
+
+    btnNextTask.addEventListener("click", () => {
+      soundClick();
+      state.currentIndex++;
+      if (state.currentIndex < QUESTION_BANK.length) {
+        renderTask();
+      } else {
+        stopTimer();
+        finishQuest();
+      }
+    });
+
+    /* ==================================================
+       08. BÁO CÁO KẾT QUẢ & TOP 10 LEADERBOARD
+       ================================================== */
+    let leaderboard = [
+      { name: "Trần Minh Quân", score: 10.0, time: "11:20" },
+      { name: "Lê Hoàng Yến", score: 9.5, time: "12:45" },
+      { name: "Nguyễn Tuấn Kiệt", score: 9.0, time: "13:10" },
+      { name: "Đỗ Bảo Trâm", score: 8.5, time: "14:05" },
+      { name: "Vũ Gia Huy", score: 8.0, time: "15:20" }
+    ];
+
+    function finishQuest() {
+      soundComplete();
+      hudProgressBar.style.width = "100%";
+      switchScreen(screenReport);
+
+      const finalScore = Math.min(10.0, Math.max(0, state.score));
+      resFinalScore.textContent = finalScore.toFixed(1);
+      resPlayerNameDisplay.textContent = state.playerName;
+      resCorrectCount.textContent = `${state.correctCount} / 20`;
+      resWrongCount.textContent = `${state.wrongCount} / 20`;
+
+      const totalSec = Math.round(state.elapsedMs / 1000);
+      const m = Math.floor(totalSec / 60);
+      const s = totalSec % 60;
+      const timeStr = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      resTimeUsed.textContent = timeStr;
+
+      if (finalScore >= 9.0) {
+        resEvaluationText.innerHTML = `<strong>Kỹ sư Xuất Sắc!</strong> Bạn đã làm chủ hoàn toàn các linh kiện CPU, RAM, ROM và ổ cứng. Hệ thống CyberCore đã sẵn sàng nâng cấp phòng lab công nghệ cao!`;
+      } else if (finalScore >= 7.0) {
+        resEvaluationText.innerHTML = `<strong>Kỹ sư Giỏi!</strong> Bạn đã nắm vững các nguyên lý phần cứng cốt lõi, chỉ cần chú ý phân biệt thêm vài tình huống tối ưu dung lượng thực tế.`;
+      } else if (finalScore >= 5.0) {
+        resEvaluationText.innerHTML = `<strong>Kỹ sư Tiềm Năng!</strong> Bạn đã hoàn thành nhiệm vụ kỹ sư CyberCore. Hãy tiếp tục khám phá thế giới công nghệ và ôn lại các thông số đơn vị GHz, GB nhé!`;
+      } else {
+        resEvaluationText.innerHTML = `<strong>Cần Nỗ Lực Thêm!</strong> Đừng nản lòng, hãy xem lại phần cấu tạo CPU và cơ chế nạp dữ liệu của RAM để thử thách lại đạt điểm số cao hơn!`;
+      }
+
+      saveToLeaderboard(state.playerName, finalScore, timeStr);
+      renderLeaderboard();
+    }
+
+    function saveToLeaderboard(name, score, time) {
+      leaderboard.push({ name, score, time });
+      leaderboard.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return a.time.localeCompare(b.time);
+      });
+      if (leaderboard.length > 10) leaderboard = leaderboard.slice(0, 10);
+    }
+
+    function renderLeaderboard() {
+      leaderboardBody.innerHTML = "";
+      leaderboard.forEach((item, idx) => {
+        const tr = document.createElement("tr");
+        let rankClass = "";
+        if (idx === 0) rankClass = "rank-1";
+        else if (idx === 1) rankClass = "rank-2";
+        else if (idx === 2) rankClass = "rank-3";
+
+        tr.innerHTML = `
+          <td class="${rankClass}">#${idx + 1}</td>
+          <td style="font-weight: 600;">${item.name}</td>
+          <td style="color: var(--neon-cyan); font-weight:700;">${item.score.toFixed(1)}</td>
+          <td style="color: var(--text-muted); font-family: monospace;">${item.time}</td>
+        `;
+        leaderboardBody.appendChild(tr);
+      });
+    }
+
+    btnRestartGame.addEventListener("click", () => {
+      soundClick();
+      switchScreen(screenWelcome);
+    });
+  </script>
+</body>
+</html>
